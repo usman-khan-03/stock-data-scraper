@@ -21,36 +21,6 @@ def get_stock_data(stock_symbol):
         return df
     else:
         raise ValueError(f"Failed to retrieve data. Status code: {response.status_code}")
-    
-    # soup = BeautifulSoup(response.text, 'html.parser')
-    
-    # # Find the script tag with the required data
-    # script_tag = soup.find('script', string=re.compile('root.App.main'))
-    
-    # if not script_tag:
-    #     raise ValueError("Couldn't find the script tag containing the data.")
-    
-    # # Extract JSON data from the script tag
-    # json_text = script_tag.string
-    # json_data = json.loads(re.search(r'root.App.main\s*=\s*({.*?});', json_text).group(1))
-    
-    # # Extract the historical data
-    # prices = json_data['context']['dispatcher']['stores']['HistoricalPriceStore']['prices']
-    
-    # # Create DataFrame from the extracted data
-    # df = pd.DataFrame(prices)
-    
-    # # Drop rows without valid 'type' field
-    # df = df[df['type'].isna()]
-    
-    # # Select relevant columns and rename them
-    # df = df[['date', 'open', 'high', 'low', 'close', 'adjclose', 'volume']]
-    # df.columns = ['Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']
-    
-    # # Convert timestamp to datetime
-    # df['Date'] = pd.to_datetime(df['Date'], unit='s')
-    
-    # return df
 
 def save_to_csv(df, stock_symbol):
     file_name = f'{stock_symbol}_historical_data.csv'
@@ -58,10 +28,12 @@ def save_to_csv(df, stock_symbol):
     print(f'Data saved to {file_name}')
 
 if __name__ == "__main__":
-    stock_symbol = 'RIG'  # Replace with the stock symbol you want to scrape
-    try:
-        df = get_stock_data(stock_symbol)
-        save_to_csv(df, stock_symbol)
-    except ValueError as e:
-        print(e)
+    stock_symbols = ['BRK-B', 'AAPL', 'GOOGL', 'AMD', 'NFLX']  # Add more symbols as needed
+    for symbol in stock_symbols:
+        try:
+            df = get_stock_data(symbol)
+            save_to_csv(df, symbol)
+            print(f"Successfully scraped data for {symbol}")
+        except ValueError as e:
+            print(f"Error scraping {symbol}: {e}")
 
